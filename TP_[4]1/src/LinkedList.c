@@ -439,11 +439,26 @@ int ll_contains(LinkedList* this, void* pElement)
                         ( 1) Si los elementos de (this2) estan contenidos en la lista (this)
                         ( 0) si los elementos de (this2) NO estan contenidos en la lista (this)
 */
-int ll_containsAll(LinkedList* this,LinkedList* this2)
+int ll_containsAll(LinkedList* this, LinkedList* this2)
 {
-    int returnAux = -1;
 
-    return returnAux;
+	int returnAux = -1;
+	void*pElement;
+	if (this != NULL && this2 != NULL)
+	{
+		returnAux = 1;
+		for (int i = 0; i < ll_len(this2); i++)
+		{
+			pElement = ll_get(this2, i);
+			if (!ll_contains(this, pElement))
+			{
+				returnAux = 0;
+				break;
+
+			}
+		}
+	}
+	return returnAux;
 }
 
 /** \brief Crea y retorna una nueva lista con los elementos indicados
@@ -452,45 +467,87 @@ int ll_containsAll(LinkedList* this,LinkedList* this2)
  * \param from int Indice desde el cual se copian los elementos en la nueva lista
  * \param to int Indice hasta el cual se copian los elementos en la nueva lista (no incluido)
  * \return LinkedList* Retorna  (NULL) Error: si el puntero a la listas es NULL
-                                o (si el indice from es menor a 0 o mayor al len de la lista)
-                                o (si el indice to es menor o igual a from o mayor al len de la lista)
-                         (puntero a la nueva lista) Si ok
-*/
-LinkedList* ll_subList(LinkedList* this,int from,int to)
+ o (si el indice from es menor a 0 o mayor al len de la lista)
+ o (si el indice to es menor o igual a from o mayor al len de la lista)
+ (puntero a la nueva lista) Si ok
+ */
+LinkedList* ll_subList(LinkedList* this, int from, int to)
 {
-    LinkedList* cloneArray = NULL;
 
-    return cloneArray;
+	LinkedList*cloneArray = NULL;
+	void*pElement;
+
+	if (this != NULL && from >= 0 && to <= ll_len(this) && from < ll_len(this)
+					&& to >= 0)
+	{
+		cloneArray = ll_newLinkedList();
+		for (int i = from; i < to; i++)
+		{
+			pElement = ll_get(this, i);
+			ll_add(cloneArray, pElement);
+		}
+
+	}
+
+	return cloneArray;
 }
-
-
 
 /** \brief Crea y retorna una nueva lista con los elementos de la lista pasada como parametro
  *
  * \param pList LinkedList* Puntero a la lista
  * \return LinkedList* Retorna  (NULL) Error: si el puntero a la listas es NULL
-                                (puntero a la nueva lista) Si ok
-*/
+ (puntero a la nueva lista) Si ok
+ */
 LinkedList* ll_clone(LinkedList* this)
 {
-    LinkedList* cloneArray = NULL;
 
-    return cloneArray;
+	LinkedList*cloneArray = NULL;
+
+	if (this != NULL)
+	{
+		cloneArray = ll_newLinkedList();
+
+		cloneArray = ll_subList(this, 0, ll_len(this));
+
+	}
+	return cloneArray;
 }
-
 
 /** \brief Ordena los elementos de la lista utilizando la funcion criterio recibida como parametro
  * \param pList LinkedList* Puntero a la lista
  * \param pFunc (*pFunc) Puntero a la funcion criterio
  * \param order int  [1] Indica orden ascendente - [0] Indica orden descendente
  * \return int Retorna  (-1) Error: si el puntero a la listas es NULL
-                                ( 0) Si ok
+ ( 0) Si ok
  */
-int ll_sort(LinkedList* this, int (*pFunc)(void* ,void*), int order)
+int ll_sort(LinkedList* this, int (*pFunc)(void*, void*), int order) // 1 si es mayor -  -1 si es menor.
 {
-    int returnAux =-1;
 
-    return returnAux;
+	int returnAux = -1;
+	int tam;
+	void*auxI = NULL;
+	void*auxJ = NULL;
+	if (this != NULL && pFunc != NULL && (order == 0 || order == 1))// mi funcion retorna 1 y -1
+	{
+		tam = ll_len(this);
+		for (int i = 0; i < tam - 1; i++)
+		{
+			for (int j = i + 1; j < tam; j++)
+			{
+				auxI = ll_get(this, i);
+				auxJ = ll_get(this, j);
 
+				if ((pFunc(auxI, auxJ) < 0 && !order)
+								|| (pFunc(auxI, auxJ) > 0 && order)) //
+				{
+					ll_set(this, i, auxJ);
+					ll_set(this, j, auxI);
+				}
+
+			}
+		}
+		returnAux = 0;
+	}
+	return returnAux;
 }
 
